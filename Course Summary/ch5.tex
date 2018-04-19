@@ -1,0 +1,58 @@
+Web documents are connected through hyperlinks: \emph{anchor text} describes content of referred document, and \emph{hyperlink} is a quality signal.
+
+\subsection{Indexing anchor text} % (fold)
+\label{sub:indexing_anchor_text}
+  Anchor text is the text surrounding a hyperlink, that can contain valuable information on the referred page. For example, \texttt{epfl.ch} is pointed by many `reputed' organization pages, so we can trust \texttt{epfl.ch}.
+
+  \textbf{Scoring} of anchor text with a weight depending on the authority of the anchor page's website (i.e. trust more anchor text from `authorative' websites). Also use \emph{non-nepotistic scoring} to avoid \emph{self-promotion} (i.e. score anchor text from other domains higher than text from the same site).
+
+  Indexing anchor text can lead to unexpected effects -- it's \emph{easily spammable}. Malicious users can create spam pages. This is seen from log-log representation of in-degree versus frequency of pages representation, because spammers violate power laws.
+% subsection indexing_anchor_text (end)
+
+\subsection{Pagerank} % (fold)
+\label{sub:link_based_ranking_pagerank}
+  \textbf{Citation analysis} can be used for web document collections with hyperlinks. \textbf{Ideas}:
+  \begin{itemize}
+    \item \emph{Citation frequency} -- Popularity/visibility of author
+    \item \emph{Co-citation analysis} -- Articles that co-cite same articles are related.
+    \item \emph{Citation indexing} -- Explore kind of researchers that are citing a certain author (indicator of \emph{quality} and \emph{discipline})
+    \item \emph{Impact factor} -- Authority of sources, such as journals. Can be used to weight the relevance of publications.
+  \end{itemize}
+
+  In particular, in the web we are interested in \textbf{incoming links} and \textbf{number of referrals with high relevance}. Spamming is widespread, e.g. \emph{link farms}.
+
+  \textbf{Link-based ranking idea}, that fights spam: based on a \emph{random walker} in the long run.
+  \begin{itemize}
+    \item \emph{Random walker model}: $P(p_i) = \sum_{p_j|p_j\rightarrow p_i}{P(p_j)/C(p_j)}$ where $C(p)$ is the number of outgoing links of page $p$ and $P(p_i)$ is the probability to visit page $p_i$ (i.e. relevance).
+    \begin{itemize}
+      \item $R$ is the \emph{transition probability} matrix, and its eigenvectors are the long-term visiting probabilities s.t. $\hat{p}=R\cdot \hat{p}$.
+      \item $L$ contains the links from one page to another. First \emph{column} are the links \emph{from} first page, first \emph{row} are the links \emph{to} first page.
+      \item It takes into account the number of referrals and the relevance of referrals and is recursive.
+      \item $P(p_i)$ defined as a matrix equation: \todo[inline]{slides 14}
+    \end{itemize}
+    \item \emph{PageRank method}: Adds a `source of rank', teleporting with probability $1-q$ according to $E$. \todo[inline]{slides 17-23}
+  \end{itemize}
+% subsection link_based_ranking_pagerank (end)
+
+\subsection{Hyperlink-Induced Topic Search (HITS)} % (fold)
+\label{sub:hyperlink_induced_topic_search_hits}
+  Finds two sets of inter-related pages:
+  \begin{itemize}
+    \item \textbf{Hubs} -- Point to many/relevant authorities
+    \item \textbf{Authorities} -- Pointed to by many/relevant hubs
+  \end{itemize}
+
+  \textbf{Computation}, in practice 5 iterations are enough:
+  \begin{itemize}
+    \item $H(p_i) = \sum_{p_j \in N | p_i\rightarrow p_j}{A(p_j)}$
+    \item $A(p_i) = \sum_{p_j \in N | p_j\rightarrow p_i}{H(p_j)}$
+    \item Normalize values (scaling) to avoid that the scores grow continuously:\\ $\sum_{p_j\in N}{A(p_j)^2}=1 \qquad \sum_{p_j\in N}{H(p_j)^2}=1$
+  \end{itemize}
+
+  \todo[inline]{slides 28-33}
+% subsection hyperlink_induced_topic_search_hits (end)
+
+\subsection{Link indexing} % (fold)
+\label{sub:link_indexing}
+  \todo[inline]{slides 34-41}
+% subsection link_indexing (end)

@@ -1,0 +1,60 @@
+\todo[inline]{slides 1-56}
+\subsection{Classification} % (fold)
+\label{sub:classification}
+  Classification Algorithms:
+  \begin{itemize}
+    \item \textbf{Basic Methods} (Naive Bayes, kNN, logistic regression)
+    \item \textbf{Ensemble methods} (random forest, gradient boosting) -- Collection of simple/weak learners, combine their results. \\Types:
+    \begin{itemize}
+      \item \emph{Bagging} -- train learners in parallel on different samples of the data, then combine with \emph{voting} or \emph{averaging}
+      \item \emph{Stacking} -- combine model outputs with secondstage learner (e.g. linear regression)
+      \item \emph{Boosting} -- train on filtered output of other learners
+    \end{itemize}
+    \todo[inline]{slide 37}
+    \item \textbf{Support Vector Machines}
+    \item \textbf{Neural Networks} (CNN, RNN, LSTM)
+  \end{itemize}
+  \subsubsection{Decision Trees} % (fold)
+  \label{ssub:decision_trees}
+    \textbf{Nodes} are tests on a \emph{single} attribute. \textbf{Branches} are attribute values. \textbf{Leaves} are marked with \emph{class} labels.
+
+    \textbf{Decision Tree Induction -- Algorithm}:
+    \begin{enumerate}
+      \item \emph{Tree construction} (top-down, divide-and-conquer)
+      \begin{itemize}
+        \item Partition recursively based on \emph{most discriminative} attribute, based on \emph{information gain} (\textbf{ID3/C4.5})
+        \item \emph{Entropy}: max. ($1$) if $P=N$, min. ($0$) if $P=0$ or $N=0$
+        $$H(P,N)=-(\frac{P}{P+N}\log_2{\frac{P}{P+N}})-(\frac{N}{P+N}\cdot\log_2{\frac{N}{P+N}})$$
+        \item Entropy of attribute $A$ (to be minimized):
+        $$H(A)=\sum_{i=1}^V\frac{P_i+N_i}{P+N}H(P_i,N_i)$$\\
+        Gain of attribute $A$ (to be maximized):
+        $$Gain(A)=H(P,N)-H(A)$$
+        \item \emph{Continuous Attributes}:
+        \begin{itemize}
+          \item Use binary decision trees, based on $val(A)<A$.
+          \item (1) sort data according to attribute value, (2) compare the \emph{relevant decision points} where we can split (determined by points where class label changes).
+          \item \emph{Scalability}: With naive implementation, at each step data set is split in subsets associated with a tree node; when evaluating attribute to split by, data needs to be sorted according to these attributes. \emph{Solution}: Create separate sorted attributes tables for each attribute (for presorting of data and maintaining order throughout construction) $\rightarrow$ Splitting attribute table straightforward, build hash table associating tuple identifiers (TIDs) of data items with partitions, select data from other attribute tables by scanning and probing the hash table.
+        \end{itemize}
+        \item \emph{Categorical Attributes} --- Split defined by a subset $X\subseteq domain(A)$ (you need to compute the entropy for each subset)
+      \end{itemize}
+      \item \emph{Partitioning} -- Stops if:
+      \begin{itemize}
+        \item All samples belong to the same class (class label of leaf)
+        \item No attributes left (majority voting)
+        \item No samples left
+      \end{itemize}
+    \end{enumerate}
+
+    \todo[inline]{sl 21-23, 32}
+  % subsubsection decision_trees (end)
+  \subsubsection{Random Forests} % (fold)
+  \label{ssub:random_forests}
+    \todo[inline]{slide 36, 38}
+    \textbf{Algorithm}:
+    \begin{enumerate}
+      \item Draw $K$ bootstrap samples of size $N$ from original dataset, with replacement (\emph{bootstrapping}), $K\approx 500$
+      \item While constructing the decision tree, select a random set of $m$ attributes out of the $p$ attributes available to infer split (\emph{feature bagging}), $m\lessapprox\sqrt{p}$
+    \end{enumerate}
+    \todo[inline]{Slide 41 (C), 42-43}
+  % subsubsection random_forests (end)
+% subsection classification (end)

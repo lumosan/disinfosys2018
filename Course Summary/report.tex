@@ -1,0 +1,85 @@
+%!TEX root = report.tex
+\documentclass[a4paper]{article}
+\input{_core.tex}
+
+\usepackage{parskip}
+
+\addbibresource{mybib.bib}
+
+% Global variables
+  \newcommand{\HWTitle}{Distributed Information Systems}
+  \newcommand{\HWSubtitle}{Summary}
+  \newcommand{\HWDueDate}{\today}
+  \newcommand{\HWAuthorName}{Lucía Montero Sanchis}
+  \title{\vspace{-.25cm} \HWTitle \\ \vspace{.25cm}}
+  %\date{\HWDueDate}
+  \author{\HWAuthorName}
+
+\begin{document}
+\maketitle
+
+\section{Advanced models for text representation} % (fold)
+\label{sec:chapter_4}
+  \input{ch4}
+\section{Link-based Ranking} % (fold)
+\label{sec:chapter_5}
+  \input{ch5}
+\section{Chapter 6} % (fold)
+\label{sec:chapter_6}
+  \input{ch6}
+\section{Chapter 7} % (fold)
+\label{sec:chapter_7}
+  \input{ch7}
+\section{Chapter 8} % (fold)
+\label{sec:chapter_8}
+  \input{ch8}
+\end{document}
+
+\begin{figure}[htp]
+  \centering
+    % \includegraphics[width=\textwidth]{images/figure.pdf}
+    \missingfigure[figwidth=\textwidth]{Some Figure}
+    \caption{Sample Figure}
+    \label{fig:sample fig}
+\end{figure}
+
+\begin{figure}[htp]
+  \centering
+  \begin{subfigure}{.45\textwidth}
+    \centering
+    \caption{First Subfigure}
+    % \includegraphics[width=\textwidth]{images/figure.pdf}
+    \missingfigure[figwidth=\textwidth]{Some subfigure}
+    \label{fig:samplesubfiga}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}{.45\textwidth}
+    \centering
+    \caption{Second Subfigure}
+    % \includegraphics[width=\textwidth]{images/figure.pdf}
+    \missingfigure[figwidth=\textwidth]{Some subfigure}
+    \label{fig:samplesubfigb}
+  \end{subfigure}
+  \caption{Sample Figure with subfigures}
+  \label{fig:samplesubfig}
+\end{figure}
+
+\begin{table}[htp]
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{llr}
+    \toprule
+    \multicolumn{2}{c}{Item} & \multirow{2}{*}{Price (\$)} \\
+    \cmidrule(r){1-2}
+    Animal    & Description &   \\
+    \midrule
+    \multirow{2}{*}{Gnat}      & per gram    & 13.65      \\
+              &    each     & 0.01       \\
+    Gnu       & stuffed     & 92.50      \\
+    Emu       & stuffed     & 33.33      \\
+    Armadillo & frozen      & 8.99       \\
+    \bottomrule
+  \end{tabular}
+  \caption{Some table }
+  \label{tab:sample table}
+\end{table}
