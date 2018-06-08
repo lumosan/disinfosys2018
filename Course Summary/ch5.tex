@@ -1,16 +1,16 @@
 Web documents are connected through hyperlinks: \emph{anchor text} describes content of referred document, and \emph{hyperlink} is a quality signal.
 
-\subsection{Indexing anchor text} % (fold)
-\label{sub:indexing_anchor_text}
+\subsubsection{Indexing anchor text} % (fold)
+\label{ssub:indexing_anchor_text}
   Anchor text is the text surrounding a hyperlink, that can contain valuable information on the referred page. For example, \texttt{epfl.ch} is pointed by many `reputed' organization pages, so we can trust \texttt{epfl.ch}.
 
   \textbf{Scoring} of anchor text with a weight depending on the authority of the anchor page's website (i.e. trust more anchor text from `authorative' websites). Also use \emph{non-nepotistic scoring} to avoid \emph{self-promotion} (i.e. score anchor text from other domains higher than text from the same site).
 
   Indexing anchor text can lead to unexpected effects -- it's \emph{easily spammable}. Malicious users can create spam pages. This is seen from log-log representation of in-degree versus frequency of pages representation, because spammers violate power laws.
-% subsection indexing_anchor_text (end)
+% subsubsection indexing_anchor_text (end)
 
-\subsection{Pagerank} % (fold)
-\label{sub:link_based_ranking_pagerank}
+\subsubsection{Pagerank} % (fold)
+\label{ssub:link_based_ranking_pagerank}
   \textbf{Citation analysis} can be used for web document collections with hyperlinks. \textbf{Ideas}:
   \begin{itemize}
     \item \emph{Citation frequency} -- Popularity/visibility of author
@@ -32,10 +32,10 @@ Web documents are connected through hyperlinks: \emph{anchor text} describes con
     \end{itemize}
     \item \emph{PageRank method}: Adds a `source of rank', teleporting with probability $1-q$ according to $E$. \todo[inline]{slides 17-23}
   \end{itemize}
-% subsection link_based_ranking_pagerank (end)
+% subsubsection link_based_ranking_pagerank (end)
 
-\subsection{Hyperlink-Induced Topic Search (HITS)} % (fold)
-\label{sub:hyperlink_induced_topic_search_hits}
+\subsubsection{Hyperlink-Induced Topic Search (HITS)} % (fold)
+\label{ssub:hyperlink_induced_topic_search_hits}
   Finds two sets of inter-related pages:
   \begin{itemize}
     \item \textbf{Hubs} -- Point to many/relevant authorities
@@ -50,9 +50,9 @@ Web documents are connected through hyperlinks: \emph{anchor text} describes con
   \end{itemize}
 
   \todo[inline]{slides 28-33}
-% subsection hyperlink_induced_topic_search_hits (end)
+% subsubsection hyperlink_induced_topic_search_hits (end)
 
-\subsection{Link indexing} % (fold)
-\label{sub:link_indexing}
+\subsubsection{Link indexing} % (fold)
+\label{ssub:link_indexing}
   \todo[inline]{slides 34-41}
-% subsection link_indexing (end)
+% subsubsection link_indexing (end)
