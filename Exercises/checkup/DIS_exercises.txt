@@ -1,0 +1,12 @@
+1 OK
+2 OK
+3 - Different values in question 1.e.
+4 - I get a different result with the eigen-vector method
+5 - I get different supports and rules for 'EPFL Twitter Data' (last section)
+6 - Mine converges in 7 iterations and I get a different plotting
+7 OK
+8 - I get slightly different values for Task 2 (last cell). I also get slightly different values for Task 4 (differences of up to 0.1 in some cases). Also slightly different values in Task 7, which results on some features sorted differently. My plot for Task 8 is slightly different as well.
+9 - I get different values in the last column of item_prediction in Task 2.
+10 OK
+11 - I get slightly different precision and recall values in Task 1 part 3.
+12 - Works properly, but my plots are a bit ugly
