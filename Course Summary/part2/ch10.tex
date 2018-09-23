@@ -1,0 +1,192 @@
+\subsection{Recommender systems} % (fold)
+\label{sub:recommender_systems}
+	% 1-28
+	\emph{Given a user model and a set of items, match users with items by ranking the items in order of decreasing relevance}. The user-item ratings matrix has one user per row and one item per column.
+	\begin{itemize}
+		\item Collaborative recommender system / Collaborative filtering -- \emph{tell me what other people like}\\
+		We need to define:
+		\begin{itemize}
+			\item Metric to compute users similarity: Pearson correlation coefficient (-1,1) or cosine similarity (considers users as two N-dimensional vectors, if they are identical then the angle between both is 0 and the cosine similarity is 1; the max. angle is $\pi/2$ and thus min. similarity is 0).
+			\item Number of neighbors for $N_U(u)$.
+			\item Way to aggregate the ratings.
+		\end{itemize}
+		It can be user or item based. Both have the cold-start problem but item-based has better scalability (item similarities are more stable, neighborhood considered is small, pair-wise item similarities can be calculated in advance):
+		\begin{itemize}
+			\item User-based collaborative filtering -- Users give ratings to items, and users with similar tastes in the past will have similar tastes in the future. Given a user $u$ and an item $i$ not rated by $u$, the estimated rating $r_u(i)$ is obtained by finding a set of users $N_U(u)$ (\emph{neighbors of $u$}) who rated the same items as $u$ in the past and that have rated $i$.
+			\item Item-based collaborative filtering -- find a set of items $N_I(i)$ that are similar to $i$ and that have been rated by $u$, and aggregate them for predicting $r_x(i)$.
+		\end{itemize}
+		\item  Content-based recommender system -- \emph{show me more of what I liked}\\
+		Requires information about the items, to find items that are similar to the ones already rated by the user (see Figs. \ref{fig:simit}, \ref{fig:simit2}).\\
+		It is the most scalable because tf-idf of items can be computed offline. Tends to recommend similar stuff. Content can be limited or impossible to extract.
+		\item Advanced methods: Matrix factorization -- transform the user-item matrix into a latent factor model, describing each user and item in a d-dimensional space (can be understood as a combination of user-based and item-based collaborative filtering).
+	\end{itemize}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/simusers.png}
+        \caption{Similarity between users (pearson correlation coefficient and cosine similarity).}
+        \label{fig:simusers}
+    \end{figure}
+
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/simusers2.png}
+        \caption{Aggregate the ratings -- aggregation function for user-based collaborative filtering.}
+        \label{fig:simusers2}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/simusers3.png}
+        \caption{Aggregate the ratings -- aggregation function for item-based collaborative filtering.}
+        \label{fig:simusers3}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/cbrec.png}
+        \caption{Content-based recommendation, TF-IDF.}
+        \label{fig:cbrec}
+    \end{figure}
+
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/simit.png}
+        \caption{Similarity between items -- cosine similarity.}
+        \label{fig:simit}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/simit2.png}
+        \caption{Making predictions -- using the ratings of the nearest neighbors to predict the rating of $a$ with the aggregation function seen before.}
+        \label{fig:simit2}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.4\textwidth]{images/ammf.png}
+        \caption{Advanced methods -- matrix factorization.}
+        \label{fig:ammf}
+    \end{figure}
+
+\newpage
+
+\subsection{Mining social graphs} % (fold)
+\label{sub:mining_social_graphs}
+	Hierarchical clustering iteratively identifies groups of nodes with high similarity. Types of community detection algorithms:
+	\begin{itemize}
+		\item Agglomerative algorithms -- merge nodes and communities with high similarity.\\
+		\emph{Louvain modularity algorithm}: based on \textbf{modularity} (measure for community quality, the higher the better because it means many mutual connections and less connections to the outside\\
+        $\sum_{c\in\text{Communities}}{(\text{nb. edges within }c-\text{expected nb. edges within }c)}$); greedily optimizes modularity.\\
+		The \emph{expected number of edges} is computed assuming $m$ edges and $k_i$ outgoing edges of node $i$, and that edges connect to $2m$ nodes. See Fig \ref{fig:modmod} for how to compute modularity with this.\\
+		All possibilities are tested and the best one is chosen. It's complexity is $O(n\cdot\log{n})$
+		\begin{enumerate}
+			\item Find communities by optimizing modularity locally on all nodes.
+			\item Group each community into one new community node.
+			\item Repeat until no more new communities are formed.
+		\end{enumerate}
+		\item Divisive algorithms -- split communities by removing links that connect nodes with low similarity.\\
+		\emph{Girvan-Newman algorithm}: based on \textbf{betweenness} measure for edges (that measures how well edges separate communities). Network is decomposed by splitting along edges with highest separation capacity.
+		\begin{enumerate}
+			\item Calculate betweenness of edges: fraction of number of shortest paths passing over the edge $\text{betweenness}(v)=\sum_{x,y}{\frac{\sigma_{xy}(v)}{\sigma_{xy}}}$, with $\sigma_{xy}$ is the number of shortest paths from $x$ to $y$ and $\sigma_{xy}(v)$ is the number of shortest paths from $x$ to $y$ passing through $v$.
+			\item Remove edges with betweenness higher than the threshold specified.
+			\item Resulting connected components are communities.
+		\end{enumerate}
+		It can be computed using BFS: (1) Path counting -- count the number of shortest paths from first node to all other nodes in the network (2) Edge flow -- one unit of flow from first node to all other nodes. The sum of the flows from all nodes equals the betweenness value. This is repeated, each time considering a different ``first node''. Then they are all summed and divided by 2.
+	\end{itemize}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/modmod.png}
+        \caption{Computing modularity. $\delta(c_i, c_j)$ is 1 if $i$ and $j$ are in the same ``community''.}
+        \label{fig:modmod}
+    \end{figure}
+
+% subsection mining_social_graphs (end)
+
+\subsection{Document classification} % (fold)
+\label{sub:document_classification}
+	Given a training set of labelled documents, build a classifier to decide the label/class for an unlabelled document.
+
+	Features:
+	\begin{itemize}
+		\item Words of the document (bag of words, document vector)
+		\item More detailed information on words (phrases, word fragments, grammatical features)
+		\item Any metadata known about the document and its author
+	\end{itemize}
+
+	The feature space is very high-dimensional, which can be dealt with using feature selection, dimensionality reduction or classification algorithms that scale well.
+
+	\textbf{Simple method: kNN} (uses vector space model). (1) retrieve the k nearest neighbors in the training set according to the vector space model (2) choose the majority class label as the class of the document.
+
+	\textbf{Naive Bayes Classifier} applies Bayes law. Feature used is all words and their counts in the document (i.e. bag of words model). The probability the class is $C$ for document $D$ is $$P(C|D)\text{  }\alpha\text{  } P(C)\prod_{w\in D}{P(w|C)}$$
+
+\begin{figure}[htp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{images/naiveb1.png}
+    \caption{Naive Bayes Classification Method.}
+    \label{fig:naiveb1}
+\end{figure}
+
+\begin{figure}[htp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{images/classwe.png}
+    \caption{Classification using word embeddings (e.g. for Fasttext) (1)}
+    \label{fig:classwe}
+\end{figure}
+\begin{figure}[htp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{images/classwe2.png}
+    \caption{Classification using word embeddings (e.g. for Fasttext) (2)}
+    \label{fig:classwe2}
+\end{figure}
+
+\begin{figure}[htp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{images/ftft.png}
+    \caption{Fasttext.}
+    \label{fig:ftft}
+\end{figure}
+
+\begin{figure}[htp]
+  \centering
+    \includegraphics[width=0.6\textwidth]{images/dcsum.png}
+    \caption{Document classification summary.}
+    \label{fig:dcsum}
+\end{figure}
+
+
+% subsection document_classification (end)
+
+\section*{Quiz questions} % (fold)
+\label{sec:quiz_questions}
+
+\emph{A clique is a subset of vertices, all adjacent to each other -- it is also called complete subgraph.}
+
+\begin{enumerate}
+	\item[w6] Introduction to data mining, association rule mining (frequent itemsets)
+	\begin{itemize}
+		\item Multi dimensional reduced to single dimension: 5 attributes, each with 3 possible values, results in 15 items when reduced to single dimension.
+		\item FP trees do not need to have counts $\leq 1$ at leaf level.
+	\end{itemize}
+	\item[w7] Clustering
+	\begin{itemize}
+		\item For clustering a dataset of pictures, k-medoids is best.
+		\item When executing DBSCAN, the result is independent on the order of choosing intial core points. Also, the number of clusters is not independent from the model parameters.
+	\end{itemize}
+	\item[w8] Classification
+	\item[w9] Classification methodology
+	\begin{itemize}
+		\item \emph{The training error is} \textbf{not} \emph{always higher than the test error}. The higher the data volume, the higher the training error.
+	\end{itemize}
+	\item[w10] Recommender systems, mining social graphs, document classification
+    \begin{itemize}
+        \item For a user that hasn't rated any item, no method can make a prediction (I think we assume that we do not know anything about the user). For an item that has never been rated, content-based RS can make a prediction (I think it's because item similarity can be computed beforehand).
+        \item Modularity clustering only ends up with a single community at the top level for connected graphs.
+        \item Modularity clustering does not always end up with the same community structure.
+    \end{itemize}
+\end{enumerate}
+% section quiz_questions (end)

@@ -1,0 +1,59 @@
+%\todo[inline]{w1 slides 60-99}
+
+\textbf{Centralized Information System}: Runs on one physical node under a single authority; the network just enables remote interaction of a user with the IS.
+
+\textbf{Distribution}:
+\begin{itemize}
+	\item \emph{Physical Distribution} -- e.g. to optimize the use of resources. Ideally, fully transparent to the user. This model of distributed processing of data is the subject of \emph{distributed data management}.
+	\item \emph{Logical Distribution} -- e.g. to access information in systems from different entities, to integrate information from independently developed ISs, different models for related concepts. They're called \emph{Heterogeneous ISs} and use methods for data integration and IS interoperatibility.
+	\item \emph{Distribution of Control} -- e.g. if ISs are under the control of different autonomous authorities. Independent users have to collaborate, coordinate and negotiate to perform information management tasks.
+\end{itemize}
+
+\textbf{Distributed Data Management}:
+\begin{itemize}
+	\item \emph{Key issues} -- Where to store data (partitioning, replication and caching, typical access patterns and data distributions); How to access data (push/pull, data indexing, queries and filters distribution, communication model).
+	\item \emph{Data partitioning} -- Determine optimized partitioning of a database and move data to nodes in the network where it is mostly used.
+	\item \emph{Distributed query processing} -- (Required because of data partitioning), executes distributed queries sending messages over the network (\emph{subqueries}) to aggregate data from different nodes into one result.
+	\item \emph{Data replication} -- If same data is frequently used in multiple nodes, it can be replicated. This improves data access (reducing network traffic) but updates need to be consistent (becoming more expensive).
+	\item \emph{Data caching} -- Keep a copy of the data that has been transmitted at the receiving node. Also consistency issues.
+	\item \emph{Information dissemination} -- can be classified along three dimensions:
+	\begin{itemize}
+		\item \emph{Control} of the data exchange:
+		\begin{itemize}
+			\item \emph{Pull} -- client-server, pull-based applications run as clients of IS servers and provide data as response to data requests/queries. %(filtering)
+			\item \emph{Push} -- e.g. for broadcasting methods such as Twitter or RSS. %(query)
+		\end{itemize}
+		\item \emph{Communication} model used
+		\begin{itemize}
+			\item Unicast -- point-to-point connection; request-reply protocol.
+			\item Broadcast -- wireless communication channels users.
+			\item Multicast -- propagate requests to multiple receivers (typically tree-like structure); gossiping in P2P.
+		\end{itemize}
+		\item \emph{Event} triggering a data exhange
+		\begin{itemize}
+			\item \emph{Periodic}
+			\item \emph{Conditional}, e.g. triggered by a data update
+			\item \emph{Ad-hoc} requests by applications or users
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\textbf{Heterogeneity}:\\
+\emph{Information starvation} (more data doesn't imply more information).\\
+The same real world aspect can be modeled differently (\emph{semantic heterogeneity}); Relating different models often requires human intervention, which is a scarce resource.
+
+\emph{Mapping} approaches:
+\begin{itemize}
+	\item Standardization (mapping through standards)
+	\item Ontologies (mediated mapping) -- relate the IS to a common model, and use this mapping to direct map among different models. First agree on a common model of the real world, that can be used as a ``proxy''.
+	\item Mapping (direct mapping) -- assume all data represented in canonical data model (e.g. relational); detect correspondences (schema matching), solve conflicts, integrate schemas (schema mapping). Mappings frequently expressed as queries. Very common for XML and relational DBs.
+\end{itemize}
+
+\emph{Syntactic heterogeneity}: Same data can be represented usigng different data models (i.e. different underlying data models to represent the chosen real world model). To solve it we need mappings amon different data models. It's simpler than solving \emph{semantic heterogeneity}.
+
+\textbf{Autonomy}:\\
+Evaluate the quality of information and thus the level of trust in a user providing information.\\
+\emph{Reputation-based} trust: if users behaved honestly previously, they will continue to do so.\\
+\emph{Protecting privacy}: using obfuscation methods such as perturbation, adding dummy regions or reducing precision. Also access control and data anonymization.\\
+\emph{Distributed control}: self-organization. Coordination in large-scale systems needs to be decentralized. Solutions: Decentralized optimization (e.g. economic resource allocation), decentralized information dissemination (e.g. gossiping).
+% subsection quiz_questions (end)

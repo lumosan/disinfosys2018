@@ -1,0 +1,66 @@
+  \subsection{Clustering} % (fold)
+  \label{sub:clustering}
+    \todo[inline]{w7 - Clustering}
+    We want to partition a database into k clusters s.t. intra-cluster similarity is high and inter-cluster similarity is low. Quantitative characteristics: \emph{Scalability} (high n, number of elements) and \emph{dimensionality} (high d, number of dimensions). Qualitative characteristics: Different \emph{types of attributes} (numerical, categorical...) and types of (cluster) \emph{shapes} (spheres, hyperplanes).
+
+    Partitioning methods -- Heuristic algorithms:
+    \begin{itemize}
+    	\item K-means -- Cluster is represented by the point whose mean distance with the objects in the cluster is minimal. It is efficient and converges fast. Gets stuck at local optimum, needs a distance function to compute the mean, k needs to be predefined, does not handle noisy data and outliers, clusters are convex.\\
+    	Algorithm:
+    	\begin{enumerate}
+    		\item Initialise k random points as cluster centers. (We often want the smallest k after which the within-cluster sum of squares decreases slowly.)
+    		\item Assign each object to the nearest cluster center.
+    		\item While partitioning changes, calculate the centroid of the points for each cluster and set it as the new cluster's center. Then assign each point to the nearest new cluster center.
+    	\end{enumerate}
+    	\item K-medoids -- Cluster is represented by the object whose mean distance with the objects in the cluster is minimal.
+    	\item K-medians -- Cluster is represented by the point whose median distance with all the objects in the cluster is minimal.
+    \end{itemize}
+
+    Advanced clustering:
+    \begin{itemize}
+    	\item Density-based clustering (DBSCAN) -- Clustering based on a local, density-based criterion.
+    	\begin{itemize}
+    		\item Handles noise, allows arbitrary-shape clusters, clusters in one scan, no predetermined number of clusters. Model parameters: \emph{density parameters}.
+    		\item Epsilon-neighborhood: $N_\epsilon (q) = \{p|d(p,q)<\epsilon \}$
+    		\item A point $q$ is \textbf{core} if $|N_\epsilon \geq \mu|$
+    		\item A point $p$ is \textbf{directly density-reachable} from $q$ if $p\in N_\epsilon(q)$ and $|N_\epsilon(q)\geq \mu|$ (i.e. if it is in the neighborhood of a core point). Direct density-reachability induces a \emph{directed graph} on the points.
+    		\begin{itemize}
+    			\item A point that is directly density-reachable from $q$ but not a core point is a \textbf{border point}.
+    			\item A point that is not directly density-reachable is an \textbf{outlier}.
+    		\end{itemize}
+    		\item A point $p$ is \textbf{density-reachable} from a point $q$ with $\epsilon,\mu$ if there is a chain of points $p_1...p_n$ ($p_1=q$, $p_n=p$) s.t. $p_{i+1}$ is directly density-reachable from $p_i$ (asymmetric relationship).
+    		\item A point $p$ is \textbf{density-connected} to a point $q$ with $\epsilon,\mu$ if there is a point $r$ s.t. both $p$ and $q$ are density-reachable from $r$ with $\epsilon,\mu$ (symmetric relationship).
+    		\item Clusters satisfy \textbf{maximality} (if q in C is a core point and p is density-reachable from q, then p is also in C) and \textbf{connectivity} (any two points in C must be density-connected). Clusters may not be disjoint. The set of clusters is unique. Connectivity implies that a cluster contains at least one core point.
+    		\item \textbf{Complexity}: Construct direct graph ($O(n^2)$); Construct clusters ($O(n^2)$). Worst case complexity for dimension $d=3$ is $\Omega(n^{4/3})$
+    	\end{itemize}
+    	\item Hierarchical clustering
+    	\item Online incremental clustering
+    \end{itemize}
+
+\begin{figure}[htp]
+  \centering
+  \begin{subfigure}{.48\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/dbscan1.png}
+      \caption{DBSCAN algorithm (1)}
+      \label{fig:dbscan1}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}{.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/dbscan2.png}
+        \caption{DBSCAN algorithm (2)}
+        \label{fig:dbscan2}
+  \end{subfigure}
+\end{figure}
+
+
+    DBSCAN in practice, steps:
+    \begin{enumerate}
+        \item \textbf{Identify core points} -- They are the ones that have a ``number of neighbors'' $\geq t$, with $t$ a predefined threshold (the ``number of neighbors'' also considers the actual point! e.g. for $t=3$, a point with two neighbors would be a core point). The neighbors are the points that are within a radial distance of $r$.
+        \item \textbf{Identify border points} -- They are, out of the non-core points, the ones that are within a distance $\leq r$ to (at least) one core point. The rest are outlier/noise points and are ignored in the following.
+        \item Considering only the \textbf{core points}, draw lines connecting pairs of core points that are within a distance $\leq r$ from each other. The resulting ``graph'' represents the clusters.
+        \item Now consider each \textbf{border point} and find the core point(s) that are within a distance $\leq r$ of the border point. The border point will then be assigned to that core point(s)'s cluster(s).
+    \end{enumerate}
+
+  % subsection clustering (end)

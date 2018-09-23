@@ -1,0 +1,146 @@
+\subsection{Link-based ranking} % (fold)
+\label{sub:link_based_ranking}
+  Web documents are connected through hyperlinks: \emph{anchor text} describes content of referred document, and \emph{hyperlink} is a quality signal.
+
+  \subsubsection{Indexing anchor text} % (fold)
+  \label{ssub:indexing_anchor_text}
+    Anchor text is the text surrounding a hyperlink, that can contain valuable information on the referred page. For example, \texttt{epfl.ch} is pointed by many `reputed' organization pages, so we can trust \texttt{epfl.ch}.
+
+    \textbf{Scoring} of anchor text with a weight depending on the authority of the anchor page's website (i.e. trust more anchor text from `authorative' websites). Also use \emph{non-nepotistic scoring} to avoid \emph{self-promotion} (i.e. score anchor text from other domains higher than text from the same site).
+
+    Indexing anchor text can lead to unexpected effects -- it's \emph{easily spammable}. Malicious users can create spam pages. This is seen from log-log representation of in-degree versus frequency of pages representation, because spammers violate power laws.
+  % subsubsection indexing_anchor_text (end)
+
+  \subsubsection{Pagerank} % (fold)
+  \label{ssub:link_based_ranking_pagerank}
+    \textbf{Citation analysis} can be used for web document collections with hyperlinks. \textbf{Ideas}:
+    \begin{itemize}
+      \item \emph{Citation frequency} -- Popularity/visibility of author
+      \item \emph{Co-citation analysis} -- Articles that co-cite same articles are related.
+      \item \emph{Citation indexing} -- Explore kind of researchers that are citing a certain author (indicator of \emph{quality} and \emph{discipline})
+      \item \emph{Impact factor} -- Authority of sources, such as journals. Can be used to weight the relevance of publications.
+    \end{itemize}
+
+    In particular, in the web we are interested in \textbf{incoming links} and \textbf{number of referrals with high relevance}. Spamming is widespread, e.g. \emph{link farms}.
+
+    \textbf{Link-based ranking idea}, that fights spam: based on a \emph{random walker} in the long run.
+    \begin{itemize}
+      \item \emph{Random walker model}: $P(p_i) = \sum_{p_j|p_j\rightarrow p_i}{P(p_j)/C(p_j)}$ where $C(p)$ is the number of outgoing links of page $p$ and $P(p_i)$ is the probability to visit page $p_i$ (i.e. relevance).
+      \begin{itemize}
+        \item $R$ is the \emph{transition probability} matrix, and its eigenvectors are the long-term visiting probabilities s.t. $\hat{p}=R\cdot \hat{p}$.
+        \item $L$ contains the links from one page to another. First \emph{column} are the links \emph{from} first page, first \emph{row} are the links \emph{to} first page.
+        \item It takes into account the number of referrals and the relevance of referrals and is recursive.
+        \item $P(p_i)$ defined as a matrix equation: The transition probability matrix $R$ captures the probability of transitioning from one page to another, and is used to determine the solution to the recursive formulation of the probabilities of visiting a page. The long-term probabilities of visiting a page add up to 1. The long-term visiting probabilities are the Eigenvector with the largest Eigenvalue of matrix $R$.
+      \end{itemize}
+      \item \emph{PageRank method}: Adds a `source of rank', teleporting with probability $1-q$ according to $E$. At a dead end, teleport to a random page. At any non-dead end, jump to a random page with a some probability.
+    \end{itemize}
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/matrixformlb.png}
+        \caption{Transition matrix for random walker.}
+        \label{fig:matrixformlb}
+    \end{figure}
+
+\newpage
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/pagerankf.png}
+        \caption{PageRank method formulas.}
+        \label{fig:pagerankf}
+    \end{figure}
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/pagerankf2.png}
+        \caption{PageRank method formulas (2) -- Practical computation of PageRank.}
+        \label{fig:pagerankf2}
+    \end{figure}
+  % subsubsection link_based_ranking_pagerank (end)
+
+  \subsubsection{Hyperlink-Induced Topic Search (HITS)} % (fold)
+  \label{ssub:hyperlink_induced_topic_search_hits}
+    Finds two sets of inter-related pages:
+    \begin{itemize}
+      \item \textbf{Hubs} -- Point to many/relevant authorities
+      \item \textbf{Authorities} -- Pointed to by many/relevant hubs
+    \end{itemize}
+
+    \textbf{Computation}, in practice 5 iterations are enough:
+    \begin{itemize}
+      \item $H(p_i) = \sum_{p_j \in N | p_i\rightarrow p_j}{A(p_j)}$
+      \item $A(p_i) = \sum_{p_j \in N | p_j\rightarrow p_i}{H(p_j)}$
+      \item Normalize values (scaling) to avoid that the scores grow continuously:\\ $\sum_{p_j\in N}{A(p_j)^2}=1 \qquad \sum_{p_j\in N}{H(p_j)^2}=1$
+    \end{itemize}
+
+    We can interpret the iterative algorithm for computing HITS in terms of computing Eigenvectors for the link matrix:
+    \begin{itemize}
+      \item If L is the link matrix then the computation of $x$ from $y$ is defined as $x=Ly$ and the computation of $y$ from $x$ is defined as $y=L^tx$.
+      \item $x^*$ (authority vector obtained after convergence) is the principal Eigenvector of $LL^t$.
+      \item $y^*$ (hub vector obtained after convergence) is the principal Eigenvector of $L^tL$.
+    \end{itemize}
+
+    %\todo[inline]{slides 28-33}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/hitsalgo1.png}
+        \caption{HITS algorithm.}
+        \label{fig:hitsalgo1}
+    \end{figure}
+
+    This algorithm is a particular algorithm for computing eigenvectors: the \emph{power iteration method}. It is proven to converge against the principal Eigenvalue. Important is the normalization of the vectors obtained in each step.
+
+    \textbf{Obtaining the base set} -- Given a query, obtain all pages mentioning the query (\emph{root set} of pages). Add page that either (1) points to a page in the root set or (2) is pointed to by a page in the root set.
+
+    \textbf{Comments on HITs}:
+    \begin{itemize}
+      \item Issues: Topic drift (off-topic pages can return off-topic authorities); mutually reinforcing affiliates (clusters of affiliates boost each others' scores).
+      \item Social network analysis: PageRank and HITs are examples of algorithms used for this.
+    \end{itemize}
+
+  % subsubsection hyperlink_induced_topic_search_hits (end)
+
+  \subsubsection{Link indexing} % (fold)
+  \label{ssub:link_indexing}
+    %\todo[inline]{slides 34-41}
+    \textbf{Adjacency lists}: The set of URLs a node is pointing to (or pointed to), sorted lexicographically. It is similar to the posting list of a document.\\
+    \emph{Representation}: Each URL is represented by one integer (instead of the text). Then, the adjacency lists are systematically compressed.\\
+    \emph{Properties}:
+    \begin{itemize}
+      \item \emph{Locality} (within lists) -- Most links contained in a page have a navigational nature: they lead the user to some other pages within the same host. The source and target URLs of links often share a long common prefix. Thus, if URLs are sorted lexicographically, the index of source and target are close to each other. Locality is a property of a list, thus addresses intra-list similarity.
+      \item \emph{Similarity} (between lists) --  Pages that occur lexicographically close to each other tend to have many common successors, because many navigational links are the same within the same local cluster of pages. Similarity is a property concerning different lists, thus addresses inter-list similarity.
+    \end{itemize}
+
+    \textbf{Exploiting locality} -- Use \emph{gap encoding} (as in inverted files), storing differences instead. Then encode the difference using a varying length compression scheme such as \emph{gamma encoding}.
+
+    \textbf{Exploiting similarity} -- Copy data  from similar lists.  If we consider a reference list, subsequent adjacency lists can story a bitlist: \texttt{1} indicates the nodes of the reference lists are retained, \texttt{0} that are not retained. Since the subsequent adjacency list can also contain other nodes, that are not stored in the reference list, those extra nodes are stored explicitly.
+  % subsubsection link_indexing (end)
+% subsection link_based_ranking (end)
+
+\section*{Quiz questions} % (fold)
+\label{sub:quiz_questions}
+  \begin{enumerate}
+    \item[1. ] Overview
+    \begin{itemize}
+      \item  An index structure does not accelerate tuple insertion. It is defined as part of physical database design, it is selected during query optimization, and it accelerates search queries.
+      \item Trust is a quality of the relationship among user and information.
+    \end{itemize}
+    \item[2.1 - 2.7] Information retrieval, vector space retrieval, probabilistic information retrieval, query expansion, inverted index, distributed retrieval.
+    \begin{itemize}
+      \item  A retrieval model attempts to model the importance that a user gives to a piece of information. It does not attempt to model the interface by which the user accesses information nor the formal correctness of a query formulation by user.
+      \item If the top 100 documents contain 50 relevant documents, we know nothing about the recall but we know that the precision of the system at 100 is 0.5.
+      \item Documents which do not contain any keyword of the original query can only receive a positive similarity coefficient after relevance feedback if $\beta >0$.
+      \item A posting indicates  the occurrence of a term in a document.
+      \item Maintaining the order of document identifiers for vocabulary construction when partitioning the document collection is important \emph{in the index merging approach for single node machines} (not in the map-reduce approach for parallel clusters).
+      \item When applying Fagin's algorithm, the number of lists scanned is the same as the number of different terms in the query. Once k documents have been identified that occur in all lists, the top-k documents are among the documents seen so far.
+    \end{itemize}
+    \item[2.8 - 2.9] Latent semantic indexing, word embeddings
+    \begin{itemize}
+      \item  When applying SVD to a term-document matrix, each concept is represented as a linear combination of terms of the vocabulary.
+      \item A column of matrix $W_c$ represents a representation of word $c$ in concept space.
+    \end{itemize}
+    \item[2.10] Link-based ranking
+    \begin{itemize}
+      \item In the worst case scenario, exploiting locality with gap encoding and/or exploiting similarity with reference lists may increase the size of an adjacency list.
+    \end{itemize}
+  \end{enumerate}

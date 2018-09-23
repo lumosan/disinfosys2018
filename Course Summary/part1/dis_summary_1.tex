@@ -1,0 +1,100 @@
+%!TEX root = dis_summary_1.tex
+\documentclass[a4paper]{article}
+\input{_core.tex}
+
+\usepackage{parskip}
+
+\addbibresource{mybib.bib}
+
+% Global variables
+  \newcommand{\HWTitle}{Distributed Information Systems}
+  \newcommand{\HWSubtitle}{Summary}
+  \newcommand{\HWDueDate}{\today}
+  \newcommand{\HWAuthorName}{Lucía Montero Sanchis}
+  \title{\vspace{-.25cm} \HWTitle \\ \vspace{.25cm}}
+  %\date{\HWDueDate}
+  \author{\HWAuthorName}
+
+\begin{document}
+\maketitle
+
+\section{Overview} % (fold)
+  \label{sec:distributed_information_systems_overview}
+
+  \subsection{What is an Information System} % (fold)
+  \label{sub:what_is_an_information_system}
+    \input{ch1_1}
+  % subsection what_is_an_information_system (end)
+
+  \subsection{Data Management} % (fold)
+  \label{sub:data_management}
+    \input{ch1_2}
+  % subsection data_management (end)
+
+  \subsection{Information Management} % (fold)
+  \label{sub:information_management}
+    \input{ch1_3}
+  % subsection information_management (end)
+
+  \subsection{Distributed Information Management} % (fold)
+  \label{sub:distributed_information_management}
+    \input{ch1_4}
+  % subsection distributed_information_management (end)
+% section distributed_information_systems_overview (end)
+
+\section{Information Retrieval} % (fold)
+\label{sec:information_retrieval_vector_space_retrieval}
+  \input{ch3}
+  \input{ch4}
+  \input{ch5}
+% section information_retrieval_vector_space_retrieval (end)
+\end{document}
+
+\begin{figure}[htp]
+  \centering
+    % \includegraphics[width=\textwidth]{images/figure.pdf}
+    \missingfigure[figwidth=\textwidth]{Some Figure}
+    \caption{Sample Figure}
+    \label{fig:sample fig}
+\end{figure}
+
+\begin{figure}[htp]
+  \centering
+  \begin{subfigure}{.45\textwidth}
+    \centering
+    \caption{First Subfigure}
+    % \includegraphics[width=\textwidth]{images/figure.pdf}
+    \missingfigure[figwidth=\textwidth]{Some subfigure}
+    \label{fig:samplesubfiga}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}{.45\textwidth}
+    \centering
+    \caption{Second Subfigure}
+    % \includegraphics[width=\textwidth]{images/figure.pdf}
+    \missingfigure[figwidth=\textwidth]{Some subfigure}
+    \label{fig:samplesubfigb}
+  \end{subfigure}
+  \caption{Sample Figure with subfigures}
+  \label{fig:samplesubfig}
+\end{figure}
+
+\begin{table}[htp]
+  \centering
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{llr}
+    \toprule
+    \multicolumn{2}{c}{Item} & \multirow{2}{*}{Price (\$)} \\
+    \cmidrule(r){1-2}
+    Animal    & Description &   \\
+    \midrule
+    \multirow{2}{*}{Gnat}      & per gram    & 13.65      \\
+              &    each     & 0.01       \\
+    Gnu       & stuffed     & 92.50      \\
+    Emu       & stuffed     & 33.33      \\
+    Armadillo & frozen      & 8.99       \\
+    \bottomrule
+  \end{tabular}
+  \caption{Some table }
+  \label{tab:sample table}
+\end{table}

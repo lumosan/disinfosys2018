@@ -1,0 +1,90 @@
+\subsection{Classification methodology} % (fold)
+\label{sub:classification_methodology}
+	\textbf{Credibility evaluation}: Data is sometimes questionable, misleading or erroneous.
+
+	\textbf{Data collection and preparation}:
+	\begin{enumerate}
+		\item Feature identification -- domain knowledge required.
+		\item Labelling
+		\begin{itemize}
+			\item Ask experts or DIY
+			\item Crowd-sourcing -- users can be truthful (expert/normal) or untruthful (sloppy, uniform spammer or random spammer). Aggregation is then required:
+			\begin{itemize}
+				\item Non-iterative aggregation algorithms -- take the matrix of answers, pre-process it and produce an estimate of the probability of the answer most likely to be correct.\\
+				Examples: \emph{Majority decision (MD), Honey Pot (HP)}
+				\item Iterative aggregation algorithms -- take the matrix, produce an estimate of the probability that a page X is labelled L (E), update the expertise of each worker from the consistency of answers (M), estimate the probability that a page X is labelled L (E)... (continue until convergence).
+			\end{itemize}
+			\item Distant learning (i.e. find complementary information sources)
+		\end{itemize}
+		\item Discretization
+		\begin{itemize}
+			\item Unsupervised
+			\begin{itemize}
+				\item Equal width -- Divide into a predefined number of bins.
+				\item Equal frequency -- Divide the range into a predefined number of bins so that every interval contains the same number of values.
+				\item Clustering -- use a clustering method, then assign one feature value per cluster.
+			\end{itemize}
+			\item Supervised -- Check whether the class labels depend on the interval or not. Independence test: $\chi^2$ statistics. Approaches:
+			\begin{itemize}
+				\item Filtering -- Considers features as independent. Ranks features according to predictive power (using $\chi^2$ statistics for the $n$ feature values; $P(\chi^2 | DF=n-1)$ gives a rank measure) and selects the best ones. Ignores interaction with the classifier and is independent of the classifier.\\
+				Alternatively, measure the \emph{mutual information} between a class label $C$ and a feature $F$. 0 means that $F$ doesn't give any information about 0; 1 means that by knowing $F$ we can know $C$.
+				\item Wrapper -- Considers feature dependence. Iteratively adds features: At each iteration it creates a classifier for each new feature and evaluates its performance, and then adds the best feature or stops when no further improvement. It interacts with the classifier and doesn't assume independence, but is computationally intensive.
+			\end{itemize}
+		\end{itemize}
+		\item Feature selection -- Different types of features (numerical, ordinal, categorical). Some require categorical features. Consists on reducing the number of $N$ features to an optimal subset of $M$ features ($M<N$).
+		\item Feature normalization
+		\begin{itemize}
+			\item Standardisation (maps to a normal distribution) $x_i'=\frac{x_i-\mu_i}{\sigma_i}$
+			\item Scaling (mapts to interval 0-1) $x_i'=\frac{x_i-m_i}{M_i-m_i}$ ($m_i$ and $M_i$ are the minimal and maximal values of $x_i$, respectively).
+		\end{itemize}
+	\end{enumerate}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/emcr.png}
+        \caption{Expectation Maximization for aggregating labels obtained through crowd-sourcing.}
+        \label{fig:emcr}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/supdisc.png}
+        \caption{Supervised discretization -- Independence test ($\chi^2$ statistics). If }
+        \label{fig:supdisc}
+    \end{figure}
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/supdisc2.png}
+        \caption{Supervised discretization -- Independence test ($\chi^2$ statistics). If $\texttt{p-value}>0.05$  (independent) then merge the intervals. The number of degrees of freedom DF is computed as $(\texttt{nb.rows}-1)\cdot(\texttt{nb.cols}-1$)}
+        \label{fig:supdisc2}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/mutinf.png}
+        \caption{Mutual information between feature $F$ and class label $C$.}
+        \label{fig:mutinf}
+    \end{figure}
+    \newpage
+	\textbf{Model training}:
+	\begin{enumerate}
+		\item Select performance metrics
+		\begin{itemize}
+			\item Model assessment: Having chosen a model, estimate the prediction error on new data.
+			\item Accuracy = $(TP+TN)/N$
+			\item Precision = $TP/(TP+FP)$
+			\item Recall = $TP/(TP+FN)$
+			\item F-score (or F1-score) = $2\cdot(P\cdot R)/(P+R)$
+			\item F-beta score = $(1+\beta^2 \cdot P\cdot R)/(\beta^2\cdot P+R)$
+		\end{itemize}
+		\item Model selection -- Estimating performances of different models to select the best one (see examples of loss functions). Error is evaluated on training set D, model is tested on independent test set T.
+		\item Organize training and test data (k-fold cross validation and also its extreme form, leave-one-out cross validation). If skewed distributions, use stratification (select validation set as random sample but making sure each class is approximately proportionally represented) or over- and under-sampling (over-proportional number of samples from smaller class, under-proportional number from larger class).
+	\end{enumerate}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/lossf.png}
+        \caption{Loss function (error function).}
+        \label{fig:lossf}
+    \end{figure}
+% subsection classification_methodology (end)

@@ -1,0 +1,206 @@
+\subsection{Introduction to Data Mining} % (fold)
+\label{sub:introduction_to_data_mining}
+  Information systems create a model of reality based on data. \textbf{Key tasks}:
+  \begin{itemize}
+    \item \textbf{Data mining} (\emph{data} to \emph{models}) -- Given data, find a model that matches the data; provide algorithms that reveal hidden structures in data
+    \item \textbf{Retrieval} (\emph{models} to \emph{data}) -- Given a model, find some specific data
+  \end{itemize}
+
+  \textbf{Growing data collections}: the rate at which digital data is produced now exceeds the rate at which storage space grows. Most data is useless, but \emph{data mining} (or \emph{data analytics}) allow to extract \textbf{actionable insights} (\emph{understandable} and \emph{useful}).
+
+  \textbf{Challenges}:
+  \begin{itemize}
+    \item\emph{Practical}: Data access and ownership (legal and political reasons, different systems); Domain knowledge and expertise (what we're looking for)
+    \item\emph{Technical}: Data management (Big Data); Data mining algorithms
+  \end{itemize}
+
+  \textbf{Classes of Data Mining Problems}:
+  \begin{itemize}
+    \item \emph{Local Properties} -- Patterns (association rules, pattern mining)
+    \item \emph{Global model} -- Descriptive model (clustering, information retrieval) and Predictive model (classification, regression)
+    \item \emph{Exploratory Data Analysis} -- used when no clear idea exists and as preprocessing
+  \end{itemize}
+
+  \textbf{Components of Data Mining algorithms}:
+  \begin{enumerate}
+    \item Pattern structure / Model representation (\emph{what we look for}), e.g. dependencies, clusters, decision trees
+    \item Scoring function (\emph{how well the model fits the data set}), e.g. similarity functions
+    \item Optimization (\emph{parameter tuning}) and search (\emph{find data satisfying a pattern})
+    \item Data management (\emph{implement algorithm for large datasets}), e.g. use of inverted files
+  \end{enumerate}
+
+  \textbf{Data Mining System}: Data mining algorithms are part of larger data mining system that support the pre- an post-processing of the data. A data mining systems performs the following typical tasks (each step can influence the preceding steps):
+  \begin{enumerate}
+    \item Data extraction / integration / transformation / cleaning -- The integrated data is kept in \emph{data warehouses} (databases replicating and consolidating the data). Data cleaning consists on removing inconsistent and faulty data. Data integration and data cleaning are supported by \emph{data warehousing systems}.
+    \item Data selection -- Subsets of the data can be selected from the \emph{data warehouse} for performing specific data mining tasks targeting a specific question. Task-specific data collections are called \emph{data-marts}.
+    \item Data analytics -- The \emph{data mining} algorithm is applied to the \emph{data-mart}. Data mining detects patterns in the data (e.g. association rule mining).
+    \item Pattern / model assessment -- Once specific patterns are detected they can be further processed, e.g. for evaluating how interesting the patterns are.
+  \end{enumerate}
+% subsection introduction_to_data_mining (end)
+
+\subsection{Association Rule Mining} % (fold)
+\label{sub:association_rule_mining}
+  Association rule mining is a technique for discovering unsuspected data dependencies and is one of the best known data mining techniques.
+
+  \subsubsection{Pattern structure} % (fold)
+  \label{ssub:pattern_structure}
+    $\texttt{Body}\rightarrow \texttt{Head}\quad [\texttt{support}, \texttt{confidence}]$
+
+    \textbf{Single-dimensional rules and multi-dimensional rules}:
+      Single-dimensional: $\texttt{buy}(x, \{\texttt{diapers}\})\rightarrow \texttt{buy}(x, \{\texttt{beer}\})\quad [0.5, 0.6]$\\
+      Multi-dimensional: $$\texttt{age}(x, \{19-25\}) \wedge \texttt{buy}(x, \{\texttt{diapers}\})\rightarrow \texttt{buy}(x, \{\texttt{beer}\})\quad [0.5, 0.6]$$
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/m2s.png}
+        \caption{Multi-dimensional rules can be transformed into single-dimensional.}
+        \label{fig:m2s}
+    \end{figure}
+
+  % subsubsection pattern_structure (end)
+  \subsubsection{Scoring function} % (fold)
+  \label{ssub:scoring_function}
+    \textbf{Support} (probability that body and head occur in transaction -- $P(A \cup B)$) and \textbf{confidence} (probability that if body occurs, head also occurs -- $P(B|A)$). We want both of them to be high.
+
+    \emph{Association rule mining approach}:
+    \begin{enumerate}
+      \item Find frequent itemsets (i.e. with enough support)
+      \item Select pertinent rules (i.e. with enough confidence)
+    \end{enumerate}
+
+
+    \textbf{PART 1: FIND FREQUENT ITEMSETS}
+
+    Some \emph{properties}:
+    \begin{itemize}
+      \item $A\rightarrow B $ can be an association rule only if $A\cup B $ is a frequent itemset.
+      \item Any subset of a frequent itemset is also a frequent itemset.
+      \item To reduce the search space, find frequent itemsets with increasing cardinality.
+    \end{itemize}
+
+    Exploiting the \emph{apriori} property:
+    \begin{itemize}
+      \item Any $(k-1)$ itemset that is a subset of X must be frequent.
+      \item Any ordered $(k-1)$ itemset that is subset of X must be frequent.
+      \item Two ordered $(k-1)$-itemsets that are subsets of X and differ only in their last position must be frequent.
+      \item The union of two $(k-1)$-itemsets that differ only by one item is a \textbf{candidate} (i.e. \emph{potential}) frequent k-itemset.
+    \end{itemize}
+
+    \emph{Exploiting the Apriori property}:
+    \begin{itemize}
+      \item \textbf{JOIN} step -- Given the frequent $(k-1)$-itemsets ($L_{k-1}$) we can build the candidate set $C_k$ by joining two $(k-1)$-itemsets that only differ by the item in the last position.
+      \begin{itemize}
+        \item Sort itemsets in $L_{k-1}$.
+        \item Find all pairs with the same first $k-2$ items but different last item.
+        \item Join the two itemsets in all pairs and add them to $C_k$.
+      \end{itemize}
+      \item \textbf{PRUNE} step -- A $k$-itemset in $C_k$ might still contain $(k-1)$-itemsets that are not frequent. Eliminate (\emph{prune}) them by checking if every $(k-1)$ sub-itemset of the candidate itemset is a frequent $(k-1)$-itemset.
+      \item Final step -- Check with the DB if the remaining candidates are indeed frequent.
+    \end{itemize}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/apsum.png}
+        \caption{Summary of the complete apriori algorithm.}
+        \label{fig:apsum}
+    \end{figure}
+
+    En resumen:
+    \begin{enumerate}
+      \item Busco los candidatos para k
+      \item Compruebo los candidatos para k $\rightarrow$ PRUNE
+      \item Busco los candidatos para k+1 a partir de los candidatos para k
+      \item Compruebo los candidatos para k+1 $\rightarrow$ PRUNE
+      \item[] Al final, comparo con la base de datos
+    \end{enumerate}
+
+    \textbf{PART 2: SELECT PERTINENT RULES}
+
+    Check for every frequent itemset whether there is a subset $A$ that can occur as the body of a rule (using the support count, i.e. the frequency of the itemset in the database which was obtained during the execution of the Apriori algorithm, to compute the confidence as a conditional probability).
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/sprls.png}
+        \caption{Select pertinent rules. Note that $c(A\rightarrow J \backslash A) = s(J \backslash A \cup A)/s(A)=s(J)/s(A)$}
+        \label{fig:sprls}
+    \end{figure}
+
+    Not all high-confidence rules are interesting or useful.
+
+    \emph{Alternative measures of interest}:
+    \begin{itemize}
+      \item Added Value $AV(A\rightarrow B) = confidence(A\rightarrow B)-support(B)$\\
+      We want the ones that have high positive or negative interest values (above 0.5).
+      \item Lift $Lift(A\rightarrow B) = confidence(A\rightarrow B)/support(B)$
+    \end{itemize}
+
+    \emph{Quantitative attributes}: Usually transformed into categorical ones. The rules depend on the chosen discretization.
+    \begin{itemize}
+      \item \emph{Static discretization} into predefined bins
+      \item \emph{Dynamic discretization} based on data distribution
+    \end{itemize}
+  % subsubsection scoring_function (end)
+
+  \subsubsection{Sampling and partitioning} % (fold)
+  \label{ssub:partitioning}
+    Improvinf Apriori for large datasets:
+    \begin{enumerate}
+      \item Transaction reduction -- if a transaction does not contain any frequent k-itemset, it is useless (and can be ommitted from subsequent DB scans).
+      \item Sampling -- Mining on a sampled subset of DB, with a lower support. Approach:
+      \begin{enumerate}
+        \item Randomly sample transactions with probability $p$.
+        \item Detect frequent itemsets with support $p\cdot s$.
+        \item Eliminate false positives by counting frequent itemsets on complete data after discovery. False negatives can only be reduced by decreasing the support threshold, at the cost of testing more candidate itemsets when scanning the complete dataset.
+        \item[*] Refinement: Assume that the $m$ transactions are randomly sorted and just choose the first $p\cdot m$ ones. False negatives can be reduced by choosing a lower threshold (e.g. $0.9\cdot p \cdot s$).
+      \end{enumerate}
+      \item Partitioning (SON algorithm) -- Any itemset that is potentially frequent in a DB must be frequent in at least one of the partitions of the DB.\\
+      (Proof: if for all partitions support is below $p\cdot s$, the total support is less than $(1/p)\cdot p\cdot s$).\\
+      Approach:
+      \begin{enumerate}
+        \item Divide transactions in $1/p$ partitions and repeteadly read partitions into main memory.
+        \item Detect in-memory algorithm to find all frequent itemsets with support threshold $p\cdot s$.
+        \item An itemset becomes a candidate if it is frequent in at least one partition.
+        \item On a second pass, count all the candidate itemsets and determine which are frequent in the entire set of transactions.
+      \end{enumerate}
+    \end{enumerate}
+
+    \emph{Partitioning} lends itself to distributed data mining -- MapReduce implementation (compute frequent itemsets at each node, distribute candidates to all nodes, accumulate the counts of all candidates).
+  % subsubsection partitioning (end)
+
+  \subsubsection{Frequent Pattern (FP) Growth} % (fold)
+  \label{ssub:fp_growth}
+    \emph{Apriori is original and most popular rule mining algorithm but others provide better performance under certain circumstances}
+
+    FP Growth is a frequent itemset discovery \emph{without} candidate itemset generation that aims at main memory implementations (thus less suitable for distributed implementation).
+
+    Nodes in the tree correspond to items; paths from the root correspond to itemsets. Counters at the nodes indicate how frequent the itemset corresponding to the path from the root to the node is. Different nodes for the same item are connected by a linked list.
+
+    \textbf{Steps}:
+    \begin{enumerate}
+      \item Build the FP-tree data structure. It requires 2 passes over the dataset.
+      \begin{enumerate}
+        \item Sort items. This keeps the FP-Tree compact (more frequent items tend to be on the top of the tree, increasing likelihood of sharing a common prefix).
+        \item FP-Tree construction. Requires two passes:
+        \begin{itemize}
+          \item[Pass 1] -- Compute support for each item:
+          \begin{itemize}
+            \item Pass over the transaction set.
+            \item Sort items in order of decreasing support.
+          \end{itemize}
+          \item[Pass 2] -- Construct the FP-Tree data structure. Tree is expanded one itemset at a time.
+        \end{itemize}
+      \end{enumerate}
+      \item Extract frequent itemsets directly from the FP-tree.
+    \end{enumerate}
+
+    Another explanation of the steps:
+    \begin{enumerate}
+      \item Find the support of each item, by looking at the available transactions. Then, remove the ones that have a support lower than the threshold considered.
+      \item Obtain the \emph{ordered frequent items}: In every transaction, keep only the frequent items and order them in frequency decreasing order.
+      \item FP Tree construction: (1) Insert the first transaction, adding each item in a `bubble' with the label \texttt{item\_id:1}; (2) Insert the second transaction, if there are common items, then increase those items' counters by one; (3...) Repeat for all transactions.
+      \item Extract the frequent itemsets from the FP-Tree.
+    \end{enumerate}
+
+    \todo[inline]{w6 - Frequent itemsets, slides 58-72}
+  % subsubsection fp_growth (end)
+% subsection association_rule_mining (end)

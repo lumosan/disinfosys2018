@@ -1,0 +1,336 @@
+%\todo[inline]{2 slide 2}
+
+  \subsection{Information Retrieval} % (fold)
+  \label{sub:information_retrieval}
+    %\todo[inline]{w2 slides 6-30}
+    \emph{Task of finding in a large collection of documents those that satisfy the information needs of a user / produce a ranked result from a user request} Most of the times text documents are considered; documents are mostly unstructured data. Information needs are user-driven and can't be formally (mathematically) defined.
+
+    Tasks of an information retrieval system:
+    \begin{itemize}
+      \item Feature extraction -- Generate structured representations of information items.
+      \item Generate structured representations of information needs, e.g. providing users with a query language.
+      \item Match information needs with information items, e.g. computing similarity of information items and retrieval queries. Very computationally expensive systems are not suitable.
+    \end{itemize}
+
+    Features that (in general) can be associated with a document:
+    \begin{itemize}
+      \item Content -- text characters, image pixels... used by the retrieval system and not visible to the human user. Documents share similar content (search, clustering, topics, classification).
+      \item Authors -- can be used to enhance performance. People interact with each other through documents (social networks, communities, influence).
+      \item Concepts -- can be manually annotated or automatically extracted. Concepts have relationships (taxonomies, ontologies).
+    \end{itemize}
+
+    The \textbf{retrieval model} \emph{determines}: structure of the document representation; structure of the query representation; similarity matching function (not objective, determines the relevance, and should reflect topic, user needs, authority, recency). The \emph{quality} of the retrieval model depends on how well it matches user needs.
+
+    If the roles of documents and queries are swapped in an information retrieval system, we obtain an \textbf{information filtering system}.
+
+    \textbf{Browsing} -- relevance feedback by the human who is navigating in the information set.
+
+    \textbf{Evaluating information retrieval}: Test collections (where relevant documents are identified manually, e.g. the TREC document collection) are used to determine the quality of an IR system.
+
+    Precision and recall measure \emph{unranked} result sets (i.e. all elements are equally important):
+    \begin{itemize}
+      \item Recall: $R = \texttt{true\_positives}/(\texttt{true\_positives}+\texttt{false\_negatives})=P(\texttt{retrieved}|\texttt{relevant}$
+      \item Precision: $P = \texttt{true\_positives}/(\texttt{true\_positives}+\texttt{false\_positives})=P(\texttt{relevant}|\texttt{retrieved}$
+      \item F-measure (combined measure): Computes the weighted harmonic mean\\
+      $F=(\alpha\cdot(1/P)+(1-\alpha)\cdot(1/R))^{-1}\qquad\quad F1=(2\cdot P\cdot R)/(P+R)$
+    \end{itemize}
+\newpage
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/rrplot1.png}
+        \caption{Recall-Precision plot. Precision drops when non-relevant documents are returned and increases when relevant documents are returned.}
+        \label{fig:rrplot1}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/rrplot2.png}
+        \caption{Interpolated precision returns the highest level of precision achieved up to a given recall level. $P_\text{int}(R)=\max_{R'\geq R}{R'}$}
+        \label{fig:rrplot2}
+    \end{figure}
+    For \emph{ranked} results:
+    \begin{itemize}
+      \item \emph{Mean Average Precision} (MAP) -- It is robust. When no relevant documents are retrieved, the precision value in the MAP is 0.
+      \item \emph{ROC curve} -- It relates specificity (x-axis) to recall (y-axis). The larger the area under the curve the better (better if fast growth in the beginning).
+      \begin{itemize}
+        \item Specificity: Fraction of true negatives in proportion to all negatives. The false positive rate (FPR) equals 1-specificity (i.e. rate of false positives that have been retrieved).
+      \end{itemize}
+    \end{itemize}
+\newpage
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=0.6\textwidth]{images/mapmap.png}
+        \caption{Mean Average Precision (MAP). When there are several queries, the results are averaged. \emph{Example for one query} -- Assuming 4 results are returned for query $q$ (RNRN), then: $P_1=1$, $P_2=0.5$, $P_3=2/3$, $P_4=0.5$ and therefore $\text{MAP}(\{q\})=(1+0.5+2/3+0.5)/4=2/3$}
+        \label{fig:mapmap}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/roccurve.png}
+        \caption{ROC Curve and specificity}
+        \label{fig:roccurve}
+    \end{figure}
+
+  % subsection information_retrieval (end)
+
+  \subsection{Text-based Information Retrieval} % (fold)
+  \label{sub:text_based_information_retrieval}
+    %\todo[inline]{w2 slides 32-47}
+  Natural language text carries a lot of meaning that cannot be fully captured computationally.
+
+  \textbf{Full text} retrieval approach only uses the words that occur in the text as features for interpreting the content. Other approaches extend it by considering other features such as the document or link structure.
+
+  \textbf{Architecture of text retrieval systems}:
+  \begin{enumerate}
+    \item \emph{Feature extraction component} -- text processing to turn queries and text documents into keyword-based representation.
+    \item \emph{Ranking system} -- implements the retrieval model. To compute the ranked result: (1) user queries are potentially modified (2) documents required for the result are retrieved from DB (3) similarity values are computed according to retrieval model.
+    \item \emph{Data access system} -- Supports the ranking system by efficiently retrieving documents containing specific keywords from large document collections, using \emph{inverted files} tehcnique.
+    \item User interface
+    \item Interface to the data collection
+  \end{enumerate}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/preptextfe.png}
+        \caption{Preprocessing text for text retrieval -- Feature extraction}
+        \label{fig:preptextfe}
+    \end{figure}
+
+\newpage
+  In full text retrieval each document is represented by a set of representative keywords or index terms that capture document's main topics. Stopwords are eliminated. Stemming eliminates grammatical variations by reducing a word to a root.
+
+  Notation:
+  \begin{itemize}
+    \item Document $d$. It is represented by a set of index terms. Weight $w_{ij}\in [0,1]$ represents the importance of index term $k_i$ for the meaning of document $d_j$.
+    \item Query $q$
+    \item Index term -- Semantic unit, word, word root, short phrase.
+    \item Database DB ($n$ documents $d_j\in \text{DB},j=1...n $)
+    \item Vocabulary $T$ ($m$ index terms, $k_i\in T, i=1...m$)
+  \end{itemize}
+  The IR system assigns a \textbf{simmilarity coefficient} $\text{sim}(q, d_j)$ as an estimate for the relevance of document $d_j$ for query $q$.
+
+  \textbf{Matrix of weights}/\textbf{term-document matrix} has documents as columns and terms as rows and indicate how relevant a term is for a given document.
+
+  \textbf{Boolean retrieval}: Users specify which terms should be present in the documents. Term-document matrix in this case contains 0/1 values. Based on set theory. To compute the similarity, we check if the term occurrences in the document satisfy the query:
+  \begin{enumerate}
+    \item Determine the disjunctive normal form of query (disjunction of conjugations). For this, generate all ``possible combinations'' and ``combine them'' with \texttt{OR}.
+    \item For each conjunctive term, create its weight vector (1 if \texttt{k} occurs, -1 if \texttt{not k} occurs, 0 otherwise).
+    \item If one weight vector of a conjunctive term matches the document weight vector, then the document is relevant. -- For a document to ``match'', there needs to be at least one term s.t. the document has \texttt{0} wherever the term has \texttt{-1}, and the document has \texttt{1} wherever the term has \texttt{1} (if the term has 0, it does not matter what the query has).
+  \end{enumerate}
+  Problems of Boolean Retrieval: No ranking, problems with large result sets, queries are difficult to formulate, no error tolerance, queries may return too many results or no results.
+  % subsection text_based_information_retrieval (end)
+
+  \subsection{Vector Space Retrieval} % (fold)
+  \label{sub:vector_space_re}
+    %\todo[inline]{w2 slides 49-62}
+    Compared to Boolean Retrieval, it supports non-binary weights. It represents documents and queries by a weight vector in the m-dimensional keyword space. Their distance is determined in the m-dimensional keyword space (geometrical relationship of vectors in said space).
+
+    Distance measure is scalar product (i.e. cosine of the angle of two vectors):
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/simcomp.png}
+        \caption{Similarity computation in vector space retrieval.}
+        \label{fig:simcomp}
+    \end{figure}
+
+    Determine the weight of document-term vectors (and query-term vectors):
+    \begin{itemize}
+      \item Term Frequency $tf(i,j)=freq(i,j)/\max_{k\in T}{freq(k,j)}$, where $\max_{k\in T}{freq(k,j)}$ is the max. frequency of all terms within the document.
+      \item Inverse Document Frequency $idf(i)=\log{(n/n_i)}\in [0,\log{(n)}]$, with $n_i$ the number of documents in which term $k_i$ occurs. This is the \emph{discriminative power of the term with respect to the document collection}.
+    \end{itemize}
+    Term weight with tf-idf scheme is therefore: $w_{ij}=tf(i,j)\cdot idf(i)$
+
+    Comments: No clear why this works (similarity values cannot be interpreted, are only used to rank); assumes independence of index terms; allows partial matching; can be used to sort results; term-weighting improves answers.
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/vvsrm.png}
+        \caption{Variants of vector space retrieval model.}
+        \label{fig:vvsrm}
+    \end{figure}
+
+  % subsection vector_space_re (end)
+
+  \subsection{Probabilistic Information Retrieval} % (fold)
+  \label{sub:probabilistic_information_retrieval}
+    %\todo[inline]{w2 slides 64-78}
+    Maximum Likelihood Estimation (MLE).\\
+    Attempt to model relevance as a probability. (1) Learn the language model of each document. (2) Determine the probability that the query was generated by each language model.
+
+    \textbf{Query Likelihood Model}: Given query $q$, determine the probability $P(d|q)$ that document $d$ is relevant to query $q$.\\
+    Assumptions:
+    \begin{itemize}
+      \item $P(d)$ (probability of a document occurring) is uniform accross a collection.
+      \item $P(q)$ is the same for all documents.
+    \end{itemize}
+    Bayes rule (to derive $P(d|q)$ from query likelihood $P(q|d)$): $$P(d|q)=\frac{P(q|d)\cdot P(d)}{P(q)}$$
+
+    To determine query likelihood $P(q|d)$, we assume each document $d$ is generated by a \emph{Language Model} $M_d$ (i.e. a mechanism that generates the words of the language). Then $P(q|d)$ is the probability that query $q$ was generated by $M_d$.
+
+    \textbf{Language Model}:
+    \begin{itemize}
+      \item Automaton, grammar (Finite State Machine from NLP)
+      \item Unigram Model (i.e. a Markov process). Assigns a probability to each term to appear. We need to count the document frequencies ($tf$) and normalize them by document length (i.e. number of terms in the document).\\
+      More complex models can be used, such as bigrams.
+    \end{itemize}
+
+    Issues with MLE Estimation: Just an estimation; if query contains a term not in the document, then $\hat{P}(q|M_d)=0$.\\
+    Smoothing adds a small weight for non-occurring terms, to avoid this.
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/smoothing.png}
+        \caption{Smoothing.}
+        \label{fig:smoothing}
+    \end{figure}
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.6\textwidth]{images/smoothing2.png}
+        \caption{Computing relevance with smoothing. Parameter tuning $\lambda$ is critical, it can be made to be query-dependent (e.g. on query size). }
+        \label{fig:smoothing2}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.75\textwidth]{images/ormp.png}
+        \caption{Overview of retrieval model properties. Vector Space Model, Language Model, BM25. Tuning, Multiple term, idf, normalization, geometric, probabilistic.}
+        \label{fig:ormp}
+    \end{figure}
+  % subsection probabilistic_information_retrieval (end)
+\newpage
+  \subsection{Query Expansion} % (fold)
+  \label{sub:query_expansion}
+    %\todo[inline]{w3 slides 2-20}
+    Add query terms to user query to increase recall. Approaches:
+    \begin{itemize}
+      \item \textbf{Local approach} -- \emph{User relevance feedback} (reformulate a query by taking into account feedback of the user on the relevance of already retrieved documents).
+      \begin{itemize}
+        \item Users do not necessarily know how to query, but usually can identify relevant documents. Search task is split in substeps and eventually converges.
+        \item Notation:
+        \begin{itemize}
+          \item Relevant documents $C_r$
+          \item Retrieval result $R$
+          \item Documents identified by user as relevant $D_r$
+          \item Documents identified by user as non-relevant $D_n$
+        \end{itemize}
+        \item \emph{Rocchio algorithm}: Find a query that optimally separates relevant and non-relevant documents. The centroid of all document vectors of a document set $D$ is the most characteristic representation of $D$.
+        \item \emph{SMART}: Practical relevance feedback. Approximation scheme for user relevance feedback. Assumes that users have identified some relevant documents and that all others are non-relevant. The original query is modified with 3 tuning parameters.
+        \item \emph{Pseudo-relevance feedback}: If users do not give feedback, automate the process considering top $k$ as relevant. It can work or fail (query drift).
+      \end{itemize}
+      \item \textbf{Global approach} -- \emph{Query expansion} (use information from a document collection).
+      \begin{itemize}
+        \item Query is expanded using a global, query-independent resource.
+        \begin{itemize}
+          \item Manually edited thesaurus
+          \item Automatically extracted thesaurus
+          \begin{itemize}
+            \item Statistically with co-occurrence [word embeddings]
+            \item With grammatical relationships [information extraction])
+          \end{itemize}
+          \item Query logs
+        \end{itemize}
+      \end{itemize}
+    \end{itemize}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/rocchio.png}
+        \caption{Rocchio algorithm (1).}
+        \label{fig:rocchio}
+    \end{figure}
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/rocchio2.png}
+        \caption{Rocchio algorithm (2).}
+        \label{fig:rocchio2}
+    \end{figure}
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/smart.png}
+        \caption{SMART.}
+        \label{fig:smart}
+    \end{figure}
+  % subsection query_expansion (end)
+
+  \subsection{Inverted Index} % (fold)
+  \label{sub:inverted_index}
+    %\todo[inline]{w3 slides 22-25,27-29,32-34,39,42-44,46-47}
+    \textbf{Term search}: Needs to be efficient. Examples are boolean retrieval, probabilistic and vector space retrieval.
+
+    \textbf{Inverted files}: Word-oriented mechanism for indexing a text collection in order to speed up the search. Appropiate for large, semi-static text collections. It supports efficient addressing of words within documents, but not frequent updates (as opposed to others such as B+-Trees).
+
+    \emph{Inverted list} $l_k$ for a term $k$: $l_k=<f_k:d_{i_1},...,d_{i_{fk}}>$\\
+    with $fk$ the number of documents in which $k$ occurs\\
+    and $d_{i_1},...,d_{i_{fk}}$ the list of document identifiers of documents that contain $k$.
+
+    \emph{Inverted file} ($IF$): lexicographically ordered sequence of inverted lists.\\
+    $IF=<i, k_i, l_{k_i}>$, $i=1...m$
+
+    \textbf{Physical organization of inverted files}: Number of references to documents (i.e. occurrences of index terms in the documents) is much larger than the number of index terms (and thus, than the number of inverted lists).
+    \begin{itemize}
+      \item \emph{Access structure} -- B+-Tree, Hashing or sorted array. Space required: $O(n^\beta)$. Main memory.
+      \item \emph{Index file} (Key, nb. Docs, Pos) -- One entry for each term of the vocabulary. Space required: $O(n^\beta)$. Main memory.
+      \item \emph{Posting file} (Doc nb.) -- Occurrences of words are stored ordered lexicographically. Space required: $O(n)$. Secondary storage.
+      \item \emph{Document file} -- Documents stored in a contiguous file. Space required: $O(n)$. Secondary storage.
+    \end{itemize}
+
+    \emph{To that extent the key observation is that the number of references to documents, corresponding to the occurrences of index terms in the documents is much larger than the number of index terms, and thus the number of inverted lists. In fact, for a document collection of size n the number of occurrences of index terms is $O(n)$, whereas the number of different index terms is typically $O(n^\beta)$, where $\beta$ is roughly 0.5 (Heap's law). For example, a document collection of size $n= 10^6$ would have approximately $m=10^3$ index terms. Therefore the index terms and the corresponding frequencies of occurrences can be kept in main memory, whereas the references to documents are kept in secondary storage. Index terms and their frequencies are stored in an index file that is kept in main memory. The access to this index file is supported by any suitable data access structure. Typically binary search, hash tables or tree-based structures, such as B+-Trees, or tries are used for that purpose. The posting files consist of the sequence of all term occurrences of the inverted file. The index file is related to the posting file by keeping for each index term a reference to the position in the posting file, where the entries related to the index terms start. The occurrences stored in the posting file in turn refer to entries in the document file, which is also kept in secondary storage.}
+
+    \textbf{Searching the inverted file}: (It's straightforward)
+    \begin{enumerate}
+      \item Vocabulary search -- Words in the query are searched in the index file.
+      \item Retrieval of documents -- The lists of the occurrences of all words found are retrieved from the posting file.
+      \item Manipulation of occurrences -- The occurrences are processed in the document file to process the query.
+    \end{enumerate}
+
+    \textbf{Construction of the inverted file}:
+    \begin{enumerate}
+      \item Search phase -- Construct dynamically a trie structure to generate a sorted vocabulary and to collect the occurrences of index terms. Each word of the text is read sequentially and searched in the vocabulary. If it is not found, it is added with an empty list of occurrences. The word position is added to the end of its list of occurrences.
+      \item Storage phase -- (After exhausting the text). The list of occurrences is written contiguously to the disk (posting file). Vocabulary is stored in lexicographical order (index file) in main memory, together with a pointer for each word to its list in the posting file.
+    \end{enumerate}
+
+    \textbf{Index construction in practice} -- When using a single node, not all index information can be in main memory. The solution is \emph{index merging}: A partial index $I_i$ is written to disk when no more memory available. The main memory is erased before continuing with the text. After exhausting the text, the partial indices are merged to obtain the final index. The merging is done by merging groups of two partial indices into one (obtaining lvl. 1), then two of those are merged (obtaining lvl. 2), etc.
+
+    \textbf{Web-scale index construction: Map-Reduce} --  It allows to parallelize index construction within an infrastructure using potentially unreliable commodity hardware.\\
+    Pioneered by Google. 20PB of data/day.\\
+    Scan 100TB on 1 node at 50MB/s: 23 days\\
+    Scan on 1000-node cluster: 33 min\\
+    \emph{Cost efficiency}: Easy to use, automatic fault-tolerance, commodicty nodes and network.
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/Mapreduce1.png}
+        \caption{Map-reduce programming model (1) -- based on key-value pairs and lists of key value pairs (denoted by angle brackets here). The map function receives some input data and produces a list of key-value pairs, that represent some partial results of the analysis. A combiner function can locally aggregate results on a node executing the mapper function, reducing the number of intermediate results. The reducer process receives as input all local results for a given key value (computed by different mapper functions). It computes then an output value.}
+        \label{fig:Mapreduce1}
+    \end{figure}
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.65\textwidth]{images/Mapreduce2.png}
+        \caption{Map-reduce programming model (2)}
+        \label{fig:Mapreduce2}
+    \end{figure}
+
+    Documents can be addressed at different \textbf{granularities}: coarser (text blocks), finer (sentence, word...). In general, the finer the granularity the less post-processing but the larger the index.
+
+    \textbf{Index compression}: Documents are ordered and each document identifier $d_{ij}$ is replaced by the difference to the preceding document identifier. Use of varying length compression further reduces space requirement.
+  % subsection inverted_index (end)
+
+  \subsection{Distributed Retrieval} % (fold)
+  \label{sub:distributed_retrieval}
+    %\todo[inline]{w3 slides 49-51, 55}
+    \textbf{Centralized retrieval}: Aggregate the weights for all documents by scanning the posting lists of the query terms. Scanning is relatively efficient. Computationally quite expensive (memory, processing).
+
+    \textbf{Distributed Retrieval}: Posting lists for different terms stored on different nodes. The transfer of complete posting lists can become too expensive on bandwidth. Solution: To determine the top-k more efficiently, avoiding complete scans of posting lists.
+
+    \textbf{Fagin's algorithm}: Entries in posting lists are sorting according to tf-ifd weights. \emph{Algorithm provably returns the top-k documents}.\\
+    \emph{Complexity}: $O(\sqrt{kn})$ entries are read in each list for $n$ documents, assuming uncorrelated entries (otherwise, it improves).\\
+    In distributed settings, the number of roundtrips can be optimized by sending a longer prefix of one list to another node.\\
+    \emph{Steps/phases}:
+    \begin{enumerate}
+      \item All lists are scanned in parallel (in round-robin) until k documents are detected that occur in all lists.
+      \item Lookup the missing weights for documents that have not been seen in all lists.
+      \item Select top-k elements.
+    \end{enumerate}
+
+  % subsection distributed_retrieval (end)

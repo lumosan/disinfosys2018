@@ -1,0 +1,119 @@
+%\todo[inline]{w1 slides 20-48}
+A \textbf{model M} is represented using a \textbf{data model D}. A data model D uses data structures and operations for representing constants, data, functions and constraints of a model M within a computer system.\\
+Examples:
+\begin{itemize}
+	\item \textbf{Associative array}: \emph{abstract data structure} (abstract data type, i.e. different physical implementations are possible) used to represent \emph{functions}. Manages a set of keyvalue pairs (representing the function) and supports set of operations to manipulate the associative array.
+	\item Labelled graphs
+	\item Relational tables
+\end{itemize}
+
+The collection of data represented in a data model D is called a \textbf{database DB}.\\
+\textbf{Database management system (DBMS)}: Computer system designed to manage databases and thus realize information systems (but many information systems use databases without a database system). It implements a \textbf{data modeling formalism} and are application (or domain) independent. The data is stored using different \textbf{encodings} of data structures exploiting available \textbf{storage} media, to manage large DBs efficiently.
+
+\textbf{Data model}: (1) \emph{data model used to represent a model within a computer system} (this is the sense we will use in the following); (2) formalism \emph{language} to specify a whole class of data models, consisting of \emph{Data Definition Language (DDL, to define a table with a specific structure)} and \emph{Data Manipulation Language (DML, to formulate queries)}.\\
+The specification of a data model using a DDL is called a \textbf{database schema} or \textbf{schema} S.
+
+\textbf{Data modeling languages} specify three components:
+\begin{itemize}
+	\item Data structures -- describes of how constants and functions are represented as data structures (represent databases).
+	\item Integrity constraints -- have to be respected by the facts and can be expressed using a specific language.
+	\item Manipulation -- data manipulation operators enable manipulation of the databases (update, transform...).
+\end{itemize}
+
+\textbf{Levels of Abstraction}: levels (not strict) of increasing interpretation of raw data, obtained by automated and/or human analysis of the data.
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=.7\textwidth]{images/levabs.png}
+        %\missingfigure[figwidth=\textwidth]{Some Figure}
+        \caption{Levels of Abstraction}
+        \label{fig:levabs}
+    \end{figure}
+
+\begin{itemize}
+	\item \emph{Unstructured data} -- Captured from real world, through measurements and human input. Structure given by static data types. Little ``semantic'' meaning.
+	\item \emph{Structured data} -- Data structured according to a ``static'' schema, implementing an interpretable model. E.g. relational data model.
+	\item \emph{Knowledge} -- Schema can evolve dynamycally as knowledge expands. More applications. Inference can be used to derive more knowledge. More flexible.
+\end{itemize}
+
+\textbf{Logical data independence} -- \emph{An abstract representation
+of data is used that is independent of the underlying
+implementation of the data at the lower abstraction level}. The same data can be interpreted in different ways. \emph{Views} support different schemas for accesing the same data stored in a DB. Corresponds to supporting diff. models based on same data. \emph{To support evolution of schemas}.
+
+\emph{An information system is (typically) based on a database management system. The information system is concerned with providing a model for a real-world aspect, whereas the database system is concerned with the efficient management of the data structures required to represent the model.}
+
+\textbf{Key data management tasks}:
+\begin{itemize}
+	\item Efficient management of large amounts of data -- how the data is mapped to
+	the different available storage media, and what auxiliary data
+	structures, so-called indices, are created to support the efficient
+	access.\\
+	How operations are performed on the data.
+	\item Ensure persistence (store data independently from programs lifetimes) and consistency (correct data independently from failures) of data through updates and failures.\\
+	Transient data is data maintained independently of the lifetime of any program (i.e. persistent data).
+	\item Exploit different media.
+\end{itemize}
+
+Row store $\rightarrow$ easy to add a tuple; Colum store $\rightarrow$ less expensive to read relevant data.
+
+\textbf{B+-Trees}: Perform well for very large DBs and can be efficiently
+managed on available storage media. They are designed s.t.:
+\begin{itemize}
+	\item Tree nodes can be stored efficiently on the available disk blocks (e.g. by having a high fanout in the tree).
+	\item the tree remains balanced independent of how the data (more precisely the search keys) are distributed, in order to guarantee a low depth of the tree and thus efficient search and log. time update operations.
+\end{itemize}
+In order to guarantee these properties,
+updates to the B+-Tree might require additional operations to
+restructure the tree -- e.g. add a new level in the tree after insertion (see Figure \ref{fig:ch1tree1}).
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/ch1tree1.png}
+        %\missingfigure[figwidth=\textwidth]{Some Figure}
+        \caption{Levels of Abstraction}
+        \label{fig:ch1tree1}
+    \end{figure}
+
+\newpage
+
+\textbf{Issues to be taken care of:}
+\begin{itemize}
+	\item \textbf{Optimizing access to DBs}:
+	\begin{itemize}
+		\item \textbf{Physical DB design} -- Is done \textbf{before} accesses to DB. Choose index and storage to match applications requirements, depending on applications':
+		\begin{itemize}
+			\item Different types of accesses
+			\item Different access patterns
+		\end{itemize}
+		\item \textbf{Declarative Query Optimization} -- Is done \textbf{at the time} the access to the DB is executed. For a logical operation (choice of best algorithm, given storage and indexing scheme, when a query is to be executed).
+	\end{itemize}
+	\item \textbf{Safe storage and updates}:
+	\begin{itemize}
+		\item Support of consistent state with:
+		\begin{itemize}
+			\item Multiple users (\textbf{concurrency}) $\rightarrow$ \textbf{Isolation} (users do not affect each other's transactions).
+			\item Presence of failures (\textbf{recovery}) $\rightarrow$ \textbf{Durability} (after executing a transaction, the result is never lost) and \textbf{atomicity} (transactions are either completely or not at all executed).
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\textbf{Physical data independence}\\
+(Second central data independence concept in DBs, after logical data independence)\\
+The same logical database can be physically realized in many different ways, without affecting the result. Logical operations (queries, updates) can be executed in
+physically different ways (using declarative query optimization and transaction management).
+
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/modarch.png}
+        %\missingfigure[figwidth=\textwidth]{Some Figure}
+        \caption{Modelling architecture -- distinction between application-specific models of information systems, data models used for their implementation in a database systems, and different physical realizations of data models (1975)}
+        \label{fig:modarch}
+    \end{figure}
+    \newpage
+    \begin{figure}[htp]
+      \centering
+        \includegraphics[width=\textwidth]{images/refview.png}
+        %\missingfigure[figwidth=\textwidth]{Some Figure}
+        \caption{Semantic layer (interpretation of the real world); syntactic layer (uses a database management system); physical layer (storage)}
+        \label{fig:refview}
+    \end{figure}
+

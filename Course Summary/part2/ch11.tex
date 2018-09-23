@@ -1,0 +1,77 @@
+\subsection{Semantic Web} % (fold)
+\label{sub:semantic_web}
+
+\subsubsection{Semi-structured data} % (fold)
+\label{ssub:semi_structured_data}
+	Database schemas define fixed data structures for databases, labeling data values with names (\emph{well understood semantics}), and impose integrity constraints (for data consistency). This results in structurally and semantically coherent data.
+
+	Structured layouts (e.g. HTML tables) provide a context, allowing to data values interpretation. Limitations of HTML include: no schemas, no constraints, data semantics difficult to analyse and share, structure of data expressed as layout.
+
+	\textbf{Application-specific markup (tags)} are used to provide domain-specific meaning to the data in a document. The data that contains tags, markup, etc to specify the semantics of data values and to relate different data values is called \textbf{semi-structured data} (e.g. email, microformats, JSON, Extensible Markup Language XML).
+
+	An XML can be viewed as (1) \emph{document model} (hierarchically nested tags enclosing textual content) and (2) \emph{data model} (semi-structured data model). This is good for exchanging data over communication networks.
+
+	\textbf{Schema-less data} is more flexible and self-contained, but lacks consistency and certain optimizations are no longer feasible.
+% subsubsection semi_structured_data (end)
+
+\subsubsection{Semantic web} % (fold)
+\label{ssub:semantic_web}
+	User defined markup (\emph{schemas}) allows to share data interpretations across applications, resulting in \textbf{semantic hetereogeneity} (which is a problem for Web \emph{interoperability}). The W3C initiated the \emph{Semantic Web} initiative for this purpose, and it includes the XML framework.
+
+	\emph{Semantic hetereogeneity} can be overcome by:
+	\begin{itemize}
+		\item Standardization -- agree on schemas, not useful for existing applications (solution a priori).
+		\item Translation -- create mappings among existing schemas/DBs. Useful in small/controlled domains.
+		\item Annotation -- reason over the conceptualization and reach an agreement for it (\emph{ontology)}.
+	\end{itemize}
+	Ways to relate entities together, according to ISO 14258 (Concepts and rules for enterprise models):
+	\begin{itemize}
+		\item Integrated approach -- common format for all models (\textbf{Standardization}).
+		\item Federated approach -- no common format; for interoperability, accommodate on the fly. They must share a common ontology. (\textbf{Translation}).
+		\item Unified approach -- there exists a common format but only at a meta-level, that provides smeantic equivalence to allow model mapping. (\textbf{Annotation}).
+	\end{itemize}
+
+	\textbf{Ontologies} are an explicit representation of a conceptualization of the real world. They should be encoded in a standardized form. They are created following either of these approaches:
+	\begin{itemize}
+		\item Ontology engineering -- manual effort; tools for editing and checking consistency.
+		\item Automatic induction of ontologies -- from large document collections or existing structured resources.
+	\end{itemize}
+
+	Model requirements for ontologies are:
+	\begin{itemize}
+		\item \textbf{Simplicity}, to encourage wide-spread use. Some existing ontologies (e.g. Cyc) are expressed in fairly complex knowledge representation models.
+		\item \textbf{Exchangeability}: any kind of data that is processed must be easily exchangeable. This motivated the use of XML as data representation format in the first place.
+		\item \textbf{Non-intrusive annotation}: data interpretation is associated with data a-posteriori, and there may be multiple interpretations for the same data.  This excludes, for example, the approach to use XML elements for annotation.
+		\item \textbf{Domain-specific vocabularies}: the model must provide a mechanism that allows to specify schemas for different domains.
+		\item \textbf{Modeling primitives}: they need to offer a sufficiently rich set of possibilities to model complex situations.
+		\item \textbf{Reasoning Capabilities}: even simple forms of reasoning within the ontology layer can make the interpretation of the data much more powerful (and thus the processing in the Semantic Web).
+	\end{itemize}
+
+	\emph{The Semantic Web standards RDF and OWL are positioned in the Semantic Web architecture in top of the syntactic layer}
+% subsubsection semantic_web (end)
+
+\subsubsection{Resource Description Framework (RDF)} % (fold)
+\label{ssub:rdf_rdf_resource_description_framework}
+	RDF consists of two parts:
+	\begin{itemize}
+		\item Language for representing metadata instances, which allows to annotate Web resources with statements (\textbf{RDF (instances)}). The web resources are addressed by \emph{Universal Resource Identifiers (URI)} (e.g. URLs).
+		\item Language for specifying schemas for RDF instances (\textbf{RDF-schema}). This language enables specification of the vocabulary and grammar that is used for forming statements for annotation.
+	\end{itemize}
+
+	\emph{Since RDF
+statements can be created also without using RDF schemas, RDF is a semi-structured data
+model, similar as with well-formed XML (instances) and XML-DTD (schemas)}.
+
+\emph{The RDF model is similar to the entity-relationship (ER) model. Entities correspond to
+resources and relationships correspond to properties. The main difference is that RDF
+requires that relationships are directed, and have a specific semantics: the resource from
+which the (directed) relationship emerges is assigned a property with the value to which the
+relationship points. }
+% subsubsection rdf_rdf_resource_description_framework (end)
+
+\subsubsection{Semantic web resources} % (fold)
+\label{ssub:semantic_web_resources}
+
+% subsubsection semantic_web_resources (end)
+
+% subsection semantic_web (end)
